@@ -1,0 +1,41 @@
+Welcome to Java !
+
+To accomplish your task at hand, you can use Sockets.
+
+Client code :
+
+function sendFile (String serverIp, int serverPort) {
+    int i;
+    FileInputStream fis = new FileInputStream ("/path/to/your/image.jpg");
+
+    Socket sock = new Socket(serverIp, serverPort);
+    DataOutputStream os = new DataOutputStream(sock.getOutputStream());
+    while ((i = fis.read()) > -1)
+        os.write(i);
+
+    fis.close();
+    os.close();
+    sock.close();
+}
+Server code :
+
+function listenForFile(int port) {
+    ServerSocket socket = new ServerSocket(serverPort);
+        while (true) {
+
+            Socket clientSocket = socket.accept();
+
+            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+            FileOutputStream fout = new FileOutputStream("/path/to/store/image.jpg");
+            int i;
+            while ( (i = dis.read()) > -1) {
+                fout.write(i);
+            }
+
+            fout.flush();
+            fout.close();
+            dis.close();
+            clientSocket.close();
+        }
+}
+Note that server method listenForFile() must be called before you call sendFile() on client. And, serverPort must be same on both sides.
